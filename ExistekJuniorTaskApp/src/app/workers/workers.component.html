@@ -1,0 +1,67 @@
+<h3>List of workers</h3>
+<input type="button" value="Add worker" class="btn btn-secondary" (click)="add()" />
+<table *ngIf="tableMode; else create" class="table table-striped">
+  <thead>
+      <tr>
+          <td>Name</td>
+          <td>Age</td>
+          <td>Company</td>
+          <td></td>
+      </tr>
+  </thead>
+    <tbody>
+        <tr *ngFor="let item of (workers$ | async)">
+            <ng-template [ngIf]="worker?.id != item.id" [ngIfElse]="edit">
+                <td>{{item?.name}}</td>
+                <td>{{item?.age}}</td>
+                <td>{{item?.companyId}}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary" (click)="editWorker(item)">Edit</button>
+                    <button class="btn btn-sm btn-danger" (click)="deleteWorker(item)">Delete</button>
+                </td>
+            </ng-template>
+        </tr>
+    </tbody>
+</table>
+
+<!--шаблон для редактирования-->
+<ng-template #edit>
+    <td>
+        <input type="text" [(ngModel)]="worker.name" class="form-control" required minlength="3"/>
+    </td>
+    <td>
+        <input type="number" [(ngModel)]="worker.age" class="form-control" required minlength="3"/>
+    </td>
+    <td>
+      <select  [(ngModel)]="worker.companyId" class="form-control" required>
+        <option *ngFor="let temp of (companies$ | async)"
+                [value]="temp.id">{{temp.title}}</option>
+      </select>
+    </td>
+    <td>
+        <input type="button" value="Save" (click)="save()" class="btn btn-sm btn-success" />
+        <input type="button" value="Cancel" (click)="cancel()" class="btn btn-sm btn-warning" />
+    </td>
+</ng-template>
+<!--шаблон для добавления-->
+<ng-template #create>
+    <div class="form-group">
+        <label>Name</label>
+        <input type="text" [(ngModel)]="worker.name" class="form-control" required minlength="3"/>
+    </div>
+    <div class="form-group">
+        <label>Age</label>
+        <input type="number" [(ngModel)]="worker.age" class="form-control" required minlength="3"/>
+    </div>
+    <div class="form-group">
+        <label>Company</label>
+        <select  [(ngModel)]="worker.companyId" class="form-control" required>
+          <option *ngFor="let temp of (companies$ | async)"
+                  [value]="temp.id">{{temp.title}}</option>
+        </select>
+    </div>
+    <div>
+        <input type="button" value="Save" (click)="save()" class="btn btn-success" />
+        <input type="button" value="Cancel" (click)="cancel()" class="btn btn-warning" />
+    </div>
+</ng-template>
